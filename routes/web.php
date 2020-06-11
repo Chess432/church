@@ -13,6 +13,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+Route::get('/','PagesController@index');
+Route::resource('news', 'AdminNewsController')->middleware('auth');
+Route::resource('programs', 'AdminProgramsController')->middleware('auth');
+Route::resource('sermons', 'AdminSermonController')->middleware('auth');
+// Route::get('/sermons','PagesController@sermons')->middleware('auth');
+// Route::get('/programs','PagesController@programs')->middleware('auth');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+

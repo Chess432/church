@@ -1,8 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
+use App\Program;
 
 class ProgramsController extends Controller
 {
@@ -13,7 +16,10 @@ class ProgramsController extends Controller
      */
     public function index()
     {
-        //
+        $programs = Program::orderBy('created_at','desc')->get();
+        return response()->json(
+             $programs
+        );
     }
 
     /**

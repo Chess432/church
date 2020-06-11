@@ -1,8 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
+use App\News;
 
 class NewsController extends Controller
 {
@@ -14,6 +17,10 @@ class NewsController extends Controller
     public function index()
     {
         //
+        $news = News::orderBy('created_at','desc')->get();
+        return response()->json(
+             $news
+        );
     }
 
     /**
@@ -46,6 +53,7 @@ class NewsController extends Controller
     public function show($id)
     {
         //
+        
     }
 
     /**

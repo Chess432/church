@@ -15,6 +15,7 @@ class CreateSermonsTable extends Migration
     {
         Schema::create('sermons', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
             $table->string('image');
             $table->string('subject');
             $table->string('text');
@@ -22,6 +23,9 @@ class CreateSermonsTable extends Migration
             $table->string('date');
             $table->text('scripture');
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')
+            ->on('users')->onDelete('cascade');
         });
     }
 

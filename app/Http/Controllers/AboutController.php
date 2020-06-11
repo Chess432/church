@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Api;
-use App\Sermon;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Validator;
+namespace App\Http\Controllers;
 
-class SermonController extends Controller
+use Illuminate\Http\Request;
+
+class AboutController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,10 +14,6 @@ class SermonController extends Controller
     public function index()
     {
         //
-        $sermons = Sermon::orderBy('created_at','desc')->get();
-        return response()->json(
-             $sermons
-        );
     }
 
     /**
