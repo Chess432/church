@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 use Illuminate\Http\Request;
 use App\News;
 
@@ -44,7 +45,8 @@ class AdminNewsController extends Controller
             'subject' => 'required',
             'date' => 'required',
             'venue' => 'required',
-            'description' => 'required'
+            'description' => 'required',
+            'cover_image' => 'image|nullable|max:1999'
         ]);
 
         // Handle File Upload
@@ -58,19 +60,19 @@ class AdminNewsController extends Controller
             // Filename to store
             $fileNameToStore= $filename.'_'.time().'.'.$extension;
             // Upload Image
-            $path = $request->file('cover_image')->storeAs('public/cover_images', $fileNameToStore);
+            $path = $request->file('cover_image')->storeAs('public/news_images', $fileNameToStore);
         } else {
             $fileNameToStore = 'noimage.jpg';
         }
 
-        // Create a new license
+        // Create a new Event
         $news = new News;
         $news->user_id = auth()->user()->id;
         $news->subject = $request->input('subject');
         $news->date = $request->input('date');
         $news->venue = $request->input('venue');
         $news->description = $request->input('description');
-        $news->photo = $request->input('cover_photo');
+        $news->photo = $fileNameToStore;
         $news->save();
 
         return redirect('/news')->with('success', 'Event created successfully');
@@ -119,7 +121,8 @@ class AdminNewsController extends Controller
             'subject' => 'required',
             'date' => 'required',
             'venue' => 'required',
-            'description' => 'required'
+            'description' => 'required',
+            'cover_image' => 'image|nullable|max:1999'
         ]);
 
         // Handle File Upload
@@ -133,10 +136,8 @@ class AdminNewsController extends Controller
             // Filename to store
             $fileNameToStore= $filename.'_'.time().'.'.$extension;
             // Upload Image
-            $path = $request->file('cover_image')->storeAs('public/cover_images', $fileNameToStore);
-        } else {
-            $fileNameToStore = 'noimage.jpg';
-        }
+            $path = $request->file('cover_image')->storeAs('public/news_images', $fileNameToStore);
+        } 
 
         // Create a new license
         $news = News::find($id);
@@ -145,7 +146,9 @@ class AdminNewsController extends Controller
         $news->date = $request->input('date');
         $news->venue = $request->input('venue');
         $news->description = $request->input('description');
-        $news->photo = $request->input('cover_photo');
+        if($request->hasFile('cover_image')){
+            $news->photo = $fileNameToStore;
+        }
         $news->save();
 
         return redirect('/news')->with('success', 'Event updated successfully');
@@ -160,6 +163,24 @@ class AdminNewsController extends Controller
     public function destroy($id)
     {
         $news = News::find($id);
+
+        //Check if event exists before deleting
+        if (!isset($news)){
+            return redirect('/news')->with('error', 'No Event Found');
+        }
+
+        // Check for correct user
+        // if(auth()->user()->id !==$news->user_id){
+        //     return redirect('/news')->with('error', 'Unauthorized Page');
+        // }
+
+
+        if($news->photo != 'noimage.jpg'){
+            // Delete Image
+            Storage::delete('public/news_images/'.$news->photo);
+        }
+
+
         $news->delete();
         return redirect('/news')->with('success', 'Item removed successfully');
     }

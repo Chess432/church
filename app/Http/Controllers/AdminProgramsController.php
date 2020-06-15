@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 use Illuminate\Http\Request;
 use App\Program;
 
@@ -41,7 +42,8 @@ class AdminProgramsController extends Controller
     {
         $this->validate($request,[
             'name' => 'required',
-            'description' => 'required'
+            'description' => 'required',
+            'cover_image' => 'image|nullable|max:1999'
         ]);
 
         // Handle File Upload
@@ -55,7 +57,7 @@ class AdminProgramsController extends Controller
             // Filename to store
             $fileNameToStore= $filename.'_'.time().'.'.$extension;
             // Upload Image
-            $path = $request->file('cover_image')->storeAs('public/cover_images', $fileNameToStore);
+            $path = $request->file('cover_image')->storeAs('public/programs_images', $fileNameToStore);
         } else {
             $fileNameToStore = 'noimage.jpg';
         }
@@ -65,7 +67,7 @@ class AdminProgramsController extends Controller
         $program->user_id = auth()->user()->id;
         $program->name = $request->input('name');
         $program->description = $request->input('description');
-        $program->photo = $request->input('cover_photo');
+        $program->photo = $fileNameToStore;
         $program->save();
 
         return redirect('/programs')->with('success', 'Program created successfully');
@@ -105,7 +107,8 @@ class AdminProgramsController extends Controller
     {
         $this->validate($request,[
             'name' => 'required',
-            'description' => 'required'
+            'description' => 'required',
+            'cover_image' => 'image|nullable|max:1999'
         ]);
 
         // Handle File Upload
@@ -119,17 +122,17 @@ class AdminProgramsController extends Controller
             // Filename to store
             $fileNameToStore= $filename.'_'.time().'.'.$extension;
             // Upload Image
-            $path = $request->file('cover_image')->storeAs('public/cover_images', $fileNameToStore);
-        } else {
-            $fileNameToStore = 'noimage.jpg';
-        }
+            $path = $request->file('cover_image')->storeAs('public/programs_images', $fileNameToStore);
+        } 
 
         // Create a new license
         $program = Program::find($id);
         $program->user_id = auth()->user()->id;
         $program->name = $request->input('name');
         $program->description = $request->input('description');
-        $program->photo = $request->input('cover_photo');
+        if($request->hasFile('cover_image')){
+            $program->photo = $fileNameToStore;
+        }
         $program->save();
 
         return redirect('/programs')->with('success', 'Program updated successfully');
@@ -144,6 +147,24 @@ class AdminProgramsController extends Controller
     public function destroy($id)
     {
         $program = Program::find($id);
+
+        //Check if event exists before deleting
+        if (!isset($program)){
+            return redirect('/programs')->with('error', 'No program Found');
+        }
+
+        // Check for correct user
+        // if(auth()->user()->id !==$program->user_id){
+        //     return redirect('/programs')->with('error', 'Unauthorized Page');
+        // }
+
+
+        if($program->photo != 'noimage.jpg'){
+            // Delete Image
+            Storage::delete('public/programs_images/'.$program->photo);
+        }
+
+
         $program->delete();
         return redirect('/programs')->with('success', 'Item removed successfully');
     }

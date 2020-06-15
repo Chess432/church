@@ -5,7 +5,7 @@
     @if(count($news) > 0)
         @foreach($news as $new)
             <div class="card" style="width: 18rem;">
-                <img class="card-img-top" src="{{ $new -> photo }}" alt="Card image cap">
+                <img class="card-img-top" src="/storage/news_images/{{ $new -> photo }}" alt="Card image cap">
                 <div class="card-body">
                 <h5 class="card-title">{{$new -> subject}}</h5>
                 <p class="card-text">{{$new -> venue}}.</p>

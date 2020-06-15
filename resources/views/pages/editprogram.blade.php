@@ -3,7 +3,7 @@
 <div class="container">
     <h2>Welcome to the Programs Update area</h2>
 
-    {!! Form::open(['action' => ['AdminProgramsController@update', $program->id], 'method'=>'POST']) !!}
+    {!! Form::open(['action' => ['AdminProgramsController@update', $program->id], 'method'=>'POST', 'enctype'=>'multipart/form-data']) !!}
     <div class="form-group row">
         {{Form::label('name', 'Name', ['class' => 'col-sm-2 col-form-label'])}}
             <div class="col-sm-10">

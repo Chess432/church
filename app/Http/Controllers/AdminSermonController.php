@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 use App\Sermon;
+use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Facades\Image;
 use Illuminate\Http\Request;
 
 class AdminSermonController extends Controller
@@ -44,7 +46,8 @@ class AdminSermonController extends Controller
             'date' => 'required',
             'text' => 'required',
             'scripture' => 'required',
-            'speaker' => 'required'
+            'speaker' => 'required',
+            'cover_image' => 'image|nullable|max:1999'
         ]);
 
         // Handle File Upload
@@ -58,12 +61,12 @@ class AdminSermonController extends Controller
             // Filename to store
             $fileNameToStore= $filename.'_'.time().'.'.$extension;
             // Upload Image
-            $path = $request->file('cover_image')->storeAs('public/cover_images', $fileNameToStore);
+            $path = $request->file('cover_image')->storeAs('public/sermons_images', $fileNameToStore);
         } else {
             $fileNameToStore = 'noimage.jpg';
         }
 
-        // Create a new license
+        // Create a new sermon
         $sermons = new Sermon;
         $sermons->user_id = auth()->user()->id;
         $sermons->subject = $request->input('subject');
@@ -71,10 +74,10 @@ class AdminSermonController extends Controller
         $sermons->text = $request->input('text');
         $sermons->speaker = $request->input('speaker');
         $sermons->scripture = $request->input('scripture');
-        $sermons->image = $request->input('cover_photo');
+        $sermons->image = $fileNameToStore;
         $sermons->save();
 
-        return redirect('/sermons')->with('success', 'Event created successfully');
+        return redirect('/sermons')->with('success', 'Sermon created successfully');
     }
 
     /**
@@ -116,7 +119,8 @@ class AdminSermonController extends Controller
             'date' => 'required',
             'text' => 'required',
             'scripture' => 'required',
-            'speaker' => 'required'
+            'speaker' => 'required',
+            'cover_image' => 'image|nullable|max:1999'
         ]);
 
         // Handle File Upload
@@ -130,10 +134,8 @@ class AdminSermonController extends Controller
             // Filename to store
             $fileNameToStore= $filename.'_'.time().'.'.$extension;
             // Upload Image
-            $path = $request->file('cover_image')->storeAs('public/cover_images', $fileNameToStore);
-        } else {
-            $fileNameToStore = 'noimage.jpg';
-        }
+            $path = $request->file('cover_image')->storeAs('public/sermons_images', $fileNameToStore);
+        } 
 
         // Create a new license
         $sermons = Sermon::find($id);
@@ -143,10 +145,12 @@ class AdminSermonController extends Controller
         $sermons->text = $request->input('text');
         $sermons->speaker = $request->input('speaker');
         $sermons->scripture = $request->input('scripture');
-        $sermons->image = $request->input('cover_photo');
+        if($request->hasFile('cover_image')){
+            $sermons->image = $fileNameToStore;
+        }
         $sermons->save();
 
-        return redirect('/sermons')->with('success', 'Sermon created successfully');
+        return redirect('/sermons')->with('success', 'Sermon updated successfully');
     }
 
     /**
@@ -158,6 +162,24 @@ class AdminSermonController extends Controller
     public function destroy($id)
     {
         $sermon = Sermon::find($id);
+
+        //Check if event exists before deleting
+        if (!isset($sermon)){
+            return redirect('/sermons')->with('error', 'No sermon Found');
+        }
+
+        // Check for correct user
+        // if(auth()->user()->id !==$sermon->user_id){
+        //     return redirect('/sermons')->with('error', 'Unauthorized Page');
+        // }
+
+
+        if($sermon->image != 'noimage.jpg'){
+            // Delete Image
+            Storage::delete('public/sermons_images/'.$sermon->image);
+        }
+
+
         $sermon->delete();
         return redirect('/sermons')->with('success', 'Sermon removed successfully');
     }

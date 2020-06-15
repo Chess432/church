@@ -3,7 +3,7 @@
 <div class="container">
     <h2>Welcome to the sermons area</h2>
 
-    {!! Form::open(['action' => 'AdminSermonController@store', 'method'=>'POST']) !!}
+    {!! Form::open(['action' => 'AdminSermonController@store', 'method'=>'POST', 'enctype'=>'multipart/form-data']) !!}
     <div class="form-group row">
         {{Form::label('subject', 'Subject', ['class' => 'col-sm-2 col-form-label'])}}
             <div class="col-sm-10">
