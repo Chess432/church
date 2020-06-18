@@ -7,6 +7,7 @@
     @foreach($sermons as $sermon)
         <div class="card" style="width: 18rem;">
             <img class="card-img-top" src="/storage/sermons_images/{{ $sermon -> image }}" alt="Card image cap">
+        <iframe class="mt-2" width="560" height="315" src="https://www.youtube.com/embed/{{ $sermon -> video_url}}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             <div class="card-body">
             <h5 class="card-title">{{$sermon -> subject}}</h5>
             <p class="card-text">{!! $sermon -> text !!}.</p>

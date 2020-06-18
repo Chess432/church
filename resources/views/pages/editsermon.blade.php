@@ -21,7 +21,7 @@
     <div class="form-group row">
         {{Form::label('speaker', 'Speaker', ['class' => 'col-sm-2 col-form-label'])}}
         <div class="col-sm-10">
-            {{Form::text('speaker', $sermon->speaker, ['class' => 'form-control', 'value' => '1', 'placeholder' => 'speaker'])}}
+            {{Form::text('speaker', $sermon->Speaker, ['class' => 'form-control', 'value' => '1', 'placeholder' => 'speaker'])}}
         </div>
     </div>
     
@@ -29,6 +29,13 @@
         {{Form::label('date', 'Date', ['class' => 'col-sm-2 col-form-label'])}}
         <div class="col-sm-10">
             {{Form::date('date', $sermon->date, ['class' => 'form-control', 'placeholder' => 'Event date'])}}
+        </div>
+    </div>
+
+    <div class="form-group row">
+        {{Form::label('video_url', 'Video URL', ['class' => 'col-sm-2 col-form-label'])}}
+        <div class="col-sm-10">
+            {{Form::text('video_url', $sermon->video_url, ['class' => 'form-control', 'value' => '1', 'placeholder' => 'video url'])}}
         </div>
     </div>
   

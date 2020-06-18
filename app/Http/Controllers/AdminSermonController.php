@@ -73,6 +73,7 @@ class AdminSermonController extends Controller
         $sermons->date = $request->input('date');
         $sermons->text = $request->input('text');
         $sermons->speaker = $request->input('speaker');
+        $sermons->video_url = $request->input('video_url');
         $sermons->scripture = $request->input('scripture');
         $sermons->image = $fileNameToStore;
         $sermons->save();
@@ -144,6 +145,7 @@ class AdminSermonController extends Controller
         $sermons->date = $request->input('date');
         $sermons->text = $request->input('text');
         $sermons->speaker = $request->input('speaker');
+        $sermons->video_url = $request->input('video_url');
         $sermons->scripture = $request->input('scripture');
         if($request->hasFile('cover_image')){
             $sermons->image = $fileNameToStore;

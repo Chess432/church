@@ -21,3 +21,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('/event_news','Api\NewsController@index');
 Route::get('/programs','Api\ProgramsController@index');
 Route::get('/sermons','Api\SermonController@index');
+
+Route::post('/login','Api\AuthController@login');
+Route::get('/logout','Api\AuthController@logout');

@@ -31,6 +31,13 @@
             {{Form::date('date', '', ['class' => 'form-control', 'placeholder' => 'Event date'])}}
         </div>
     </div>
+
+    <div class="form-group row">
+        {{Form::label('video_url', 'Video URL', ['class' => 'col-sm-2 col-form-label'])}}
+        <div class="col-sm-10">
+            {{Form::text('video_url', '', ['class' => 'form-control', 'value' => '1', 'placeholder' => 'video url'])}}
+        </div>
+    </div>
   
     
     <div class="form-group row">
